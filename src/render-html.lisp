@@ -1,6 +1,6 @@
 ;;;; render-html.lisp
 
-(in-package :rulisp.wiki)
+(in-package #:restas.wiki)
 
 (defparameter *wiki-render-map* (make-hash-table))
 
@@ -42,7 +42,7 @@
             (xfactory:with-element-factory ((E))
               (E :div
                  (E :a
-                    (ehref "#~A" (calc-md5-sum name))
+                    (ehref "#~A" (ppcre:regex-replace-all "\\s" name "_"))
                     (etext name))
                  (make-wiki-toc (cddr item))))))))
 
@@ -101,7 +101,7 @@
   (let ((xfactory:*node* (xtree:make-child-element xfactory:*node*
                                                    "div")))
     (eclass "chapter")
-    (eid (calc-md5-sum (second (first items))))
+    (eid (ppcre:regex-replace-all "\\s" (second (first items)) "_"))
     (render-all-wiki-items items)))
 
 
@@ -168,10 +168,37 @@
           (render-wiki-item item)
           (e-break-line))))
   
+(defun code-to-html (code)
+  (flet ((empty-line-p (line)
+           (string= (string-trim #(#\Space #\Tab) line) "")))
+    (let ((lines (split-sequence:split-sequence #\Newline code)))
+      (iter
+        (while lines)
+        (for isempty = (empty-line-p (first lines)))
+        (if isempty
+            (setf lines (cdr lines)))
+        (while isempty))
+      (iter
+        (while lines)
+        (for isempty = (empty-line-p (car (last lines))))
+        (if isempty
+            (setf lines
+                  (remove (car (last lines)) lines)))
+        (while isempty))
+      (let ((min-space-count (iter (for line in (remove-if #'empty-line-p lines))
+                                   (minimize (or (position #\Space line :test-not #'char-equal) 0)))))
+        (setf lines
+              (iter (for line in lines)
+                    (collect (if (empty-line-p line)
+                                 ""
+                                 (subseq line min-space-count))))))
+      (colorize::html-colorization :common-lisp
+                                   (format nil "~{~A~%~}" lines)))))
+
 (define-wiki-render dokuwiki:code (items)
   (let ((xfactory:*node* (xtree:make-child-element xfactory:*node* "pre")))
     (eclass "code")
-    (e-text2html (rulisp:code-to-html (car items)))))
+    (e-text2html (code-to-html (car items)))))
 
 (define-wiki-render dokuwiki:quoted (items)
   (let ((xfactory:*node* (xtree:make-child-element xfactory:*node* "blockquote")))

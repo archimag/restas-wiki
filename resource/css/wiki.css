@@ -1,0 +1,94 @@
+/* wiki.css */
+
+.code, pre {
+    background-color: #eee;
+    border: 1px solid #d0d0d0;
+    margin: 5px;
+    padding: 10px;
+
+    font-family: "Courier New", monospace;
+    font-size: 90%;
+
+    overflow: auto;
+}
+
+.wiki-page-menu { text-align: right; }
+
+.wiki-page-menu > ul {
+    font-size: 80%;
+    margin: 0;
+    padding: 0;
+}
+
+.wiki-page-menu > ul > li {
+    display: inline;
+    list-style-type: none;
+    list-style-position: outside;
+    list-style-image: none;
+    margin-right: 0.2em;
+}
+
+/*
+.toc {
+    margin-left: 2em;
+    border: 1px solid #cccccc;
+    float: right;
+    width: 250px;
+    clear: both;
+    background-color: white;
+    
+    text-align: left;
+    line-height: 1.2em;
+}
+
+.toc-header {
+    font-size: 80%;
+    padding: 0.25em;
+    background-color: #eeeeee;
+    border-bottom: 1px solid #cccccc;
+    font-weight: bold;
+}
+
+.toc-body {
+    font-size: 90%;
+    background-color: white;
+    padding-top: 0.3em;
+    padding-bottom: 0.3em;
+    padding-right: 0.2em;
+}
+
+.toc-body ul {
+    padding: 0;
+    padding-left: 1.5em;
+    margin: 0;
+}
+
+.toc a { color: #0066cc; }
+
+*/
+
+textarea {
+    padding: 0.1em;
+    width: 100%;
+}
+
+
+.chapter {
+    padding-left: 20px;
+}
+.chapter > h3 {
+    border-bottom: 1px solid #cccccc;
+}
+
+.chapter:first-child {
+    padding-left: 0;
+}
+
+.footnotes { border-top: 1px solid #cccccc; margin-top: 1em; padding-top: 0.5em; }
+
+.footnotes > div { font-size: 95%; margin-top: 0.3em; margin-bottom: 0.3em; }
+
+
+.fn_top { font-size: 80%; vertical-align: super; margin-left: 0.1em; }
+
+.fn_bot { font-size: 90%; font-weight: bold; vertical-align: super; margin-right: 0.2em; }

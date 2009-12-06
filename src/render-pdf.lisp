@@ -1,8 +1,12 @@
 ;;;; render-pdf.lisp
 
-(in-package :rulisp.wiki)
+(in-package #:restas.wiki)
 
 (defparameter *wiki-pdf-render-map* (make-hash-table))
+
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (defparameter *corefonts-dir* #P"/usr/share/fonts/corefonts/")
+  (defparameter *cm-fonts-dir* #P"/usr/share/fonts/cm/"))
 
 (defmacro deffont (name string-name)  
   `(defparameter ,name
