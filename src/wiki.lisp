@@ -11,10 +11,11 @@
      (if (fad:file-exists-p path)
          (restas.wiki.view:show-page (list :page (generate-page-html (wiki-parser:parse :dokuwiki path))
                                            :menu (if (wiki-user)
-                                                     `((:action "EDIT" :href ,(restas:genurl 'edit-wiki-page :page epage))
-                                                       (:action "HISTORY" :href ,(restas:genurl 'history-wiki-page :page epage))
-                                                       (:action "PDF" :href ,(restas:genurl 'view-wiki-page-in-pdf :page epage))))))
-         (restas.wiki.view:page-not-found `(:create-link ,(restas:genurl 'edit-wiki-page :page epage)))))))
+                                                     `((:action "edit" :href ,(restas:genurl 'edit-wiki-page :page epage))
+                                                       (:action "history" :href ,(restas:genurl 'history-wiki-page :page epage))
+                                                       (:action "pdf" :href ,(restas:genurl 'view-wiki-page-in-pdf :page epage))))))
+         (restas.wiki.view:page-not-found `(:create-link ,(restas:genurl 'edit-wiki-page :page epage)))))
+   (hunchentoot:url-decode page)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; routes
@@ -49,7 +50,8 @@
                               :requirement #'wiki-user)
   (finalize-page 
    (restas.wiki.view:edit-page (list :page-content (if (fad:file-exists-p (wiki-page-pathname page))
-                                                       (alexandria:read-file-into-string (wiki-page-pathname page)))))))
+                                                       (alexandria:read-file-into-string (wiki-page-pathname page)))))
+   (format nil "Редактирование ~A" (hunchentoot:url-decode page))))
 
 (defun save-wiki-page (page content author &optional comment)
   (let* ((time (get-universal-time))
@@ -88,7 +90,8 @@
                                               (list :page-content (hunchentoot:post-parameter "page-content")
                                                     :preview (generate-page-html
                                                               (wiki-parser:parse :dokuwiki
-                                                                                 (hunchentoot:post-parameter "page-content")))))))
+                                                                                 (hunchentoot:post-parameter "page-content")))))
+                                             (format nil "Предпросмотр ~A" (hunchentoot:url-decode page))))
     (t (progn
          (save-wiki-page page
                          (hunchentoot:post-parameter "page-content")
@@ -98,7 +101,7 @@
                                      
 
 (define-route history-wiki-page ("history/:(page)"
-                                        :requirement #'wiki-user)
+                                 :requirement #'wiki-user)
   (flet ((version-plist (item)
            (list :date (local-time:format-timestring nil
                                                      (local-time:universal-to-timestamp (first item))
@@ -114,8 +117,9 @@
                                     (with-standard-io-syntax
                                       (read in)))))))
       (finalize-page
-       (restas.wiki.view:history-page `(:menu ((:action "VIEW" :href ,(restas:genurl 'view-wiki-page :page (hunchentoot:url-decode page))))
-                                        :history ,(mapcar #'version-plist changes)))))))
+       (restas.wiki.view:history-page `(:menu ((:action "view" :href ,(restas:genurl 'view-wiki-page :page (hunchentoot:url-decode page))))
+                                        :history ,(mapcar #'version-plist changes)))
+       (format nil "История ~A" (hunchentoot:url-decode page))))))
 
     
 (define-route view-archive-wiki-page ("history/:(page)/:(time)")
@@ -123,11 +127,12 @@
    (let* ((path (wiki-page-archive-pathname page time))
           (dpage (hunchentoot:url-decode page))
           (menu (if (wiki-user)
-                    `((:action "CURRENT" :href ,(restas:genurl 'view-wiki-page :page dpage))
-                      (:action "HISTORY" :href ,(restas:genurl 'history-wiki-page :page dpage))))))
+                    `((:action "current" :href ,(restas:genurl 'view-wiki-page :page dpage))
+                      (:action "history" :href ,(restas:genurl 'history-wiki-page :page dpage))))))
      (if (fad:file-exists-p path)
          (restas.wiki.view:show-page (list :menu menu
                                            :page (generate-page-html (wiki-parser:parse :dokuwiki
                                                                                         (read-gzip-file-into-string path)))))
-         (restas.wiki.view:archive-not-found (list :menu menu))))))
+         (restas.wiki.view:archive-not-found (list :menu menu))))
+   (format nil "Архивная версия - ~A" (hunchentoot:url-decode page))))
 

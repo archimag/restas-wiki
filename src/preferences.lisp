@@ -20,19 +20,21 @@
 
 ;;;; wiki user
 
-(defvar *wiki-user-function* #'(lambda () "archimag"))
+(defvar *wiki-user-function* nil)
 
 (defun wiki-user ()
-  (funcall *wiki-user-function*))
+  (if *wiki-user-function*
+      (funcall *wiki-user-function*)))
 
 
 ;;;; finalize page
 
 (defvar *finalize-page* #'restas.wiki.view:standalone-frame)
 
-(defun finalize-page (content)
+(defun finalize-page (content &optional title)
   (funcall *finalize-page*
            (list :content content
+                 :title title
                  :css (list (restas:genurl 'css :file "wiki.css")))))
 
 ;;;; generate-page-html

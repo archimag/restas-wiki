@@ -13,6 +13,10 @@
 	    <head>
       	    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
+            {if $title}
+                <title>{$title}</title>
+            {/if}
+
             {foreach $item in $css}
                 <link href="{$item}" rel="stylesheet" type="text/css" />
             {/foreach}
@@ -33,17 +37,17 @@
         <ul>
             {foreach $item in $menu}
                 <li>
-                    <a href="{$item.href |escapeUri}">
+                    <a href="{$item.href |escapeUri}" class="{$item.action}-link">
                         {switch $item.action}
-                            {case 'EDIT'}
+                            {case 'edit'}
                                  Править
-                            {case 'HISTORY'}
+                            {case 'history'}
                                  История
-                            {case 'PDF'}
+                            {case 'pdf'}
                                  PDF
-                            {case 'VIEW'}
+                            {case 'view'}
                                  Смотреть
-                            {case 'CURRENT'}
+                            {case 'current'}
                                  Текущая версия
                             {default}
                                  {$item.action}
