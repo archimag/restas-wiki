@@ -1,7 +1,7 @@
 ;;;; restas-wiki.asd
 
 (defsystem restas-wiki
-  :depends-on (#:restas #:wiki-parser #:cl-libxml2 #:xfactory #:colorize #:local-time #:zip #:cl-typesetting)
+  :depends-on (#:restas #:wiki-parser #:cl-libxml2 #:xfactory #:colorize #:local-time #:zip #:cl-typesetting #:closure-template)
   :components ((:module "src"
                         :components ((:file "packages")
                                      (:file "render-html" :depends-on ("packages"))
