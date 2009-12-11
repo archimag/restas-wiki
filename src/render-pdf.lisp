@@ -9,10 +9,13 @@
 (in-package #:restas.wiki)
 
 (defparameter *wiki-pdf-render-map* (make-hash-table))
-
+(merge-pathnames "src/wiki.tmpl"
+                                                    *restas-wiki-dir*)
 (eval-when (:compile-toplevel :load-toplevel :execute)
-  (defparameter *corefonts-dir* #P"/usr/share/fonts/corefonts/")
-  (defparameter *cm-fonts-dir* #P"/usr/share/fonts/cm/"))
+  ;;(defparameter *corefonts-dir* #P"/usr/share/fonts/corefonts/")
+  ;;(defparameter *cm-fonts-dir* #P"/usr/share/fonts/cm/")
+  (defparameter *corefonts-dir* (merge-pathnames "fonts/" *restas-wiki-dir*))
+  (defparameter *cm-fonts-dir* (merge-pathnames "fonts/" *restas-wiki-dir*)))
 
 (defmacro deffont (name string-name)  
   `(defparameter ,name

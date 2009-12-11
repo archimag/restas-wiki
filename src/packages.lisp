@@ -15,6 +15,9 @@
 
 (in-package #:restas.wiki)
 
+(defparameter *restas-wiki-dir*
+  (asdf:component-pathname (asdf:find-system '#:restas-wiki)))
+
 (closure-template:compile-template :common-lisp-backend
                                    (merge-pathnames "src/wiki.tmpl"
-                                                    (asdf:component-pathname (asdf:find-system '#:restas-wiki))))
+                                                    *restas-wiki-dir*))
