@@ -48,7 +48,7 @@
             (xfactory:with-element-factory ((E))
               (E :div
                  (E :a
-                    (ehref "#~A" (ppcre:regex-replace-all "\\s" name "_"))
+                    (ehref "#~A" name)
                     (etext name))
                  (make-wiki-toc (cddr item))))))))
 
@@ -107,7 +107,7 @@
   (let ((xfactory:*node* (xtree:make-child-element xfactory:*node*
                                                    "div")))
     (eclass "chapter")
-    (eid (ppcre:regex-replace-all "\\s" (second (first items)) "_"))
+    (eid (second (first items))) 
     (render-all-wiki-items items)))
 
 

@@ -40,7 +40,7 @@
   (show-wiki-page "index"))
 
 (define-route view-wiki-page-in-pdf (":(page)/pdf"
-                                            :content-type "application/pdf")
+                                     :content-type "application/pdf")
   (flexi-streams:with-output-to-sequence (out)
     (let ((out* (flexi-streams:make-flexi-stream out)))
       (pdf-render-wiki-page (wiki-parser:parse :dokuwiki
