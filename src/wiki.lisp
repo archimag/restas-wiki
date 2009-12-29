@@ -21,7 +21,9 @@
                                                        (:action "history" :href ,(restas:genurl 'history-wiki-page :page epage))
                                                        (:action "pdf" :href ,(restas:genurl 'view-wiki-page-in-pdf :page epage))))))
          (restas.wiki.view:page-not-found `(:create-link ,(restas:genurl 'edit-wiki-page :page epage)))))
-   (hunchentoot:url-decode page)))
+   (if (string= page "index")
+       *index-page-title*
+       (hunchentoot:url-decode page))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; routes

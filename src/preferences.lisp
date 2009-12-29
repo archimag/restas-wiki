@@ -8,6 +8,10 @@
 
 (in-package #:restas.wiki)
 
+;;;; title index page
+
+(defvar *index-page-title* "Index")
+
 ;;;; wiki data dir
 
 (defvar *wiki-dir* nil)

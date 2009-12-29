@@ -11,7 +11,8 @@
   (:export #:*wiki-dir*
            #:*wiki-user-function*
            #:*finalize-page*
-           #:*generate-page-html*))
+           #:*generate-page-html*
+           #:*index-page-title*))
 
 (in-package #:restas.wiki)
 
