@@ -287,6 +287,15 @@
                                          (subseq (car items) (1+ delimiter))
                                          (car items))))))))
 
+(define-wiki-render dokuwiki:media  (items)
+  (let ((img (xtree:make-child-element xfactory:*node* "img")))
+    (setf (xtree:attribute-value img "alt")
+          "Изображение")
+    (setf (xtree:attribute-value img "src")
+          (string-trim #(#\Space #\Tab #\Newline)
+                       (car items)))))
+
+
 (define-wiki-render dokuwiki:external-link (items)
   (let ((link (xtree:make-child-element xfactory:*node* "a")))
     (setf (xtree:attribute-value link "href") (car items))
