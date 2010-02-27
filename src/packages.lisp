@@ -6,7 +6,7 @@
 ;;;; Author: Moskvitin Andrey <archimag@gmail.com>
 
 
-(restas:define-plugin #:restas.wiki
+(restas:define-module #:restas.wiki
   (:use #:cl #:iter #:restas.optional)
   (:export #:*wiki-dir*
            #:*wiki-user-function*
