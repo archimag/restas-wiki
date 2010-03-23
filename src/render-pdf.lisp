@@ -37,8 +37,8 @@
   (deffont *bold-font* "cmunbbx")
   (deffont *italic-font* "cmunbmo")
   (defcorefont *monospace-font* "cour")
-
-(defparameter *font-size* 12))
+  (deffont *footnote-font* "PTS56F")
+  (defparameter *font-size* 12))
 
 (defun pdf-render-wiki-item (item)
   (cond
@@ -130,7 +130,8 @@
       (pdf-render-all-wiki-items items)))))
 
 (define-wiki-pdf-render dokuwiki:footnote (items)
-  (declare (ignore items)))
+	(tt:with-style (:font *footnote-font* :font-size 10.0)
+	  (pdf-render-all-wiki-items items)))
 
 (define-wiki-pdf-render dokuwiki:linebreak (items)
   (declare (ignore items))
