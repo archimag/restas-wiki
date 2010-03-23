@@ -17,7 +17,7 @@
 (defvar *wiki-dir* nil)
 
 (defun wiki-page-pathname (page)
-  (merge-pathnames (format nil "pages/~A" (hunchentoot:url-encode  page))
+  (merge-pathnames (format nil "pages/~A" (hunchentoot:url-encode page))
                    *wiki-dir*))
 
 (defun wiki-page-changes-pathname (page)
