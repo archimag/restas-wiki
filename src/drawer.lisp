@@ -37,7 +37,8 @@
   (restas.wiki.view:finalize-page data))
 
 (defmethod generate-content-from-markup ((drawer drawer) data)
-  (render-wiki-page-to-string (wiki-parser:parse :dokuwiki (getf data :content))))
+  ;;(render-wiki-page-to-string (wiki-parser:parse :dokuwiki (getf data :content))))
+  (getf data :content))
 
 (defmethod render-route-data ((drawer drawer) data route)
   (funcall (find-symbol (symbol-name route)
@@ -45,7 +46,10 @@
            data))
 
 (defmethod render-route-data ((drawer drawer) data (route (eql 'main-wiki-page)))
-  (render-route-data drawer data 'show-wiki-page))
+  (render-route-data drawer
+                     (list* :title *index-page-title*
+                     data)
+                     'show-wiki-page))
 
 (defmethod render-route-data ((drawer drawer) data (route (eql 'show-wiki-page)))
   (if (getf data :content)

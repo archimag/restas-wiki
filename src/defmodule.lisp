@@ -8,7 +8,8 @@
 
 (restas:define-module #:restas.wiki
   (:use #:cl #:iter #:restas.optional)
-  (:export #:*wiki-user-function*
+  (:export #:*index-page-title*
+           #:*wiki-user-function*
 
            ;; storage
            #:*storage*
@@ -27,11 +28,13 @@
 
 (defvar *storage*)
 
+(defparameter *index-page-title* "index")
+
 (defparameter *restas-wiki-dir*
   (asdf:component-pathname (asdf:find-system '#:restas-wiki)))
 
 (closure-template:compile-template :common-lisp-backend
-                                   (merge-pathnames "src/wiki.tmpl"
+                                   (merge-pathnames "src/drawer.tmpl"
                                                     *restas-wiki-dir*))
 
 (defvar *wiki-user-function* nil)

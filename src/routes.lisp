@@ -65,24 +65,3 @@
                           :history-href (restas:genurl 'history-wiki-page
                                                   :page page))))
   
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; misc
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(define-route show-wiki-page-in-pdf (":(page)/pdf"
-                                     :content-type "application/pdf")
-  (flexi-streams:with-output-to-sequence (out)
-    (let ((out* (flexi-streams:make-flexi-stream out)))
-      (pdf-render-wiki-page (wiki-parser:parse :dokuwiki
-                                               (storage-find-page *storage* page))
-                            out*))
-    out))
-
-
-(defparameter *resource-dir*
-  (merge-pathnames "resource/"
-                   (asdf:component-pathname (asdf:find-system '#:restas-wiki))))
-
-(define-route css ("css/:file")
-  (merge-pathnames (format nil "css/~A" file)
-                   *resource-dir*))

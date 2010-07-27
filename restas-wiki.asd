@@ -7,17 +7,12 @@
 
 
 (defsystem restas-wiki
-  :depends-on (#:restas #:wiki-parser #:cl-libxml2 #:xfactory #:colorize #:local-time #:zip #:cl-typesetting #:closure-template)
+  :depends-on (#:restas #:local-time #:zip #:closure-template)
   :components
   ((:module "src"
             :components
-            ((:file "packages")
-             (:module "dokuwiki"
-                      :components
-                      ((:file "render-html")
-                       (:file "render-pdf"))
-                      :depends-on ("packages"))
-             (:file "storage" :depends-on ("packages"))
-             (:file "drawer" :depends-on ("dokuwiki"))
-             (:file "wiki" :depends-on ("storage" "drawer"))))))
+            ((:file "defmodule")             
+             (:file "storage" :depends-on ("defmodule"))
+             (:file "drawer" :depends-on ("defmodule"))
+             (:file "routes" :depends-on ("storage" "drawer"))))))
     
