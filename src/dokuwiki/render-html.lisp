@@ -86,6 +86,10 @@
                (xtree:append-child xfactory:*node* *footnotes*))
              (xtree:release *footnotes*))))))
 
+(defun render-wiki-page-to-string (wikidoc)
+  (xtree:with-object (html (render-wiki-page wikidoc))
+    (xtree:serialize html :to-string)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

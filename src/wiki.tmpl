@@ -7,32 +7,97 @@
 
 {namespace restas.wiki.view}
 
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Main frame for standalone wiki
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
- 
-{template standalone-frame}
+{template showPageMenu}
+    <ul class="wiki-page-menu">
+        {if $editHref}
+            <a href="{$editHref}">Edit</a>                    
+        {/if}
+    </ul>
+{/template}
+
+{template finalizePage}
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
     {\n}
-    <html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru">
+    <html xmlns="http://www.w3.org/1999/xhtml">
 	    <head>
-      	    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      	    <meta http-equiv="Content-Type" content="text/html; charset='utf-8'" />
 
             {if $title}
                 <title>{$title}</title>
             {/if}
-
-            {foreach $item in $css}
-                <link href="{$item}" rel="stylesheet" type="text/css" />
-            {/foreach}
 	    </head>
 
 	    <body>
-            {$content |noAutoescape}
+            {if $menuLinks}
+                {call showPageMenu data="$menuLinks" /}
+            {/if}
+            
+            {$body |noAutoescape}
         </body>
     </html>
 {/template}
 
+{template generateBodyContent}
+    <h1>{$title}</h1>
+    {$content |noAutoescape}
+{/template}
+
+{template page-not-found}
+   <h1>Эта страница ещё не существует</h1>
+   <a href="{$createLink}">Создать</a>
+{/template}
+
+{template editWikiPage}
+    /*
+    <p>
+        Отредактируйте страницу и нажмите Сохранить. 
+        Пожалуйста, редактируйте только в том случае, если планируете <strong>улучшить</strong> содержимое. <br />
+        Если Вы просто хотите потестировать что-либо, воспользуйтесь специальной страницей: <a href="/wiki/Песочница">песочницей</a>.
+    </p>
+    */
+    <form  method="post">           
+        <textarea rows="30" cols="80" name="content">
+            {nil}{$content}{nil}
+        </textarea>
+        
+        <div class="edit-buttons">
+            <input type="submit" value="Save" name="save" />
+            <input type="submit" value="Preview" name="preview" />
+            <input type="submit" value="Cancel" name="cancel" />
+        </div>
+    </form>
+
+    {if $preview}
+        {$preview |noAutoescape}
+    {/if}
+{/template}
+
+{template historyWikiPage}
+    <h1>{$title}</h1>
+
+    <ul>
+        {foreach $version in $history}
+            <li>
+                {$version.date}
+                <a href="{$version.href}">{$version.name}</a>
+                <span style="color: #665">{$version.author}</span>
+            </li>
+        {/foreach}
+    </ul>
+{/template}
+
+
+{template archive-not-found}
+    {if $menu}
+        {call page-menu}
+             {param menu: $menu /}
+        {/call}
+    {/if}
+
+    Архивный файл не обнаружен    
+{/template}
+
+   
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Page menu
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -62,87 +127,4 @@
             {/foreach}
         </ul>
     </div>
-{/template}
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Show page
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-{template show-page}
-    {if $menu}
-        {call page-menu}
-             {param menu: $menu /}
-        {/call}
-    {/if}
-
-    {$page |noAutoescape}
-{/template}
-
-
-{template page-not-found}
-   <h1>Эта страница ещё не существует</h1>
-   <a href="{$createLink}">Создать</a>
-{/template}
-
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * edit page
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    
-{template edit-page}
-    <p>
-        Отредактируйте страницу и нажмите Сохранить. 
-        Пожалуйста, редактируйте только в том случае, если планируете <strong>улучшить</strong> содержимое. <br />
-        Если Вы просто хотите потестировать что-либо, воспользуйтесь специальной страницей: <a href="/wiki/Песочница">песочницей</a>.
-    </p>
-    <form  method="post">           
-        <textarea rows="30" cols="80" name="page-content">
-            {nil}{$pageContent}{nil}
-        </textarea>
-        
-        <div class="edit-buttons">
-            <input type="submit" value="Сохранить" name="save" />
-            <input type="submit" value="Предпросмотр" name="preview" />
-            <input type="submit" value="Отмена" name="cancel" />
-        </div>
-    </form>
-
-    {if $preview}
-        {$preview |noAutoescape}
-    {/if}
-{/template}
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * history page
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-{template history-page}
-    {if $menu}
-        {call page-menu}
-             {param menu: $menu /}
-        {/call}
-    {/if}
-
-    <h1>История страницы</h1>
-
-    <ul>
-        {foreach $version in $history}
-            <li>
-                {$version.date}
-                <a href="{$version.href}">{$version.name}</a>
-                <span style="color: #665">{$version.author}</span>
-            </li>
-        {/foreach}
-    </ul>
-{/template}
-
-
-{template archive-not-found}
-    {if $menu}
-        {call page-menu}
-             {param menu: $menu /}
-        {/call}
-    {/if}
-
-    Архивный файл не обнаружен    
 {/template}

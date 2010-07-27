@@ -12,9 +12,17 @@
            #:*wiki-user-function*
            #:*finalize-page*
            #:*generate-page-html*
-           #:*index-page-title*))
+
+           ;; storage
+           #:*storage*
+           #:storage-find-page
+           #:file-storage
+
+           ))
 
 (in-package #:restas.wiki)
+
+(defvar *storage*)
 
 (defparameter *restas-wiki-dir*
   (asdf:component-pathname (asdf:find-system '#:restas-wiki)))
@@ -22,3 +30,9 @@
 (closure-template:compile-template :common-lisp-backend
                                    (merge-pathnames "src/wiki.tmpl"
                                                     *restas-wiki-dir*))
+
+(defvar *wiki-user-function* nil)
+
+(defun wiki-user ()
+  (if *wiki-user-function*
+      (funcall *wiki-user-function*)))
