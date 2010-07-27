@@ -7,14 +7,6 @@
 
 {namespace restas.wiki.view}
 
-{template showPageMenu}
-    <ul class="wiki-page-menu">
-        {if $editHref}
-            <a href="{$editHref}">Edit</a>                    
-        {/if}
-    </ul>
-{/template}
-
 {template finalizePage}
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
     {\n}
@@ -32,9 +24,43 @@
                 {call showPageMenu data="$menuLinks" /}
             {/if}
             
-            {$body |noAutoescape}
+            {$content |noAutoescape}
         </body>
     </html>
+{/template}
+
+{template showPageMenu}
+    <ul class="wiki-page-menu">
+        {if $editHref}
+            <li>
+                <a href="{$editHref}">Edit</a>
+            </li>
+        {/if}
+
+         {if $currentVersionHref}
+            <li>
+                <a href="{$currentVersionHref}">Current version</a>
+            </li>
+         {/if}
+
+         {if $historyHref}
+            <li>
+                <a href="{$historyHref}">History</a>
+            </li>
+         {/if}
+
+         {if $pdfHref}
+            <li>
+                <a href="{$pdfHref}">PDF</a>
+            </li>
+         {/if}
+
+         {if $viewHref}
+            <li>
+                <a href="{$viewHref}">View</a>
+            </li>
+         {/if}
+    </ul>
 {/template}
 
 {template generateBodyContent}
@@ -48,13 +74,6 @@
 {/template}
 
 {template editWikiPage}
-    /*
-    <p>
-        Отредактируйте страницу и нажмите Сохранить. 
-        Пожалуйста, редактируйте только в том случае, если планируете <strong>улучшить</strong> содержимое. <br />
-        Если Вы просто хотите потестировать что-либо, воспользуйтесь специальной страницей: <a href="/wiki/Песочница">песочницей</a>.
-    </p>
-    */
     <form  method="post">           
         <textarea rows="30" cols="80" name="content">
             {nil}{$content}{nil}
@@ -87,14 +106,8 @@
 {/template}
 
 
-{template archive-not-found}
-    {if $menu}
-        {call page-menu}
-             {param menu: $menu /}
-        {/call}
-    {/if}
-
-    Архивный файл не обнаружен    
+{template archiveNotFound}
+    Archive file not found
 {/template}
 
    
@@ -102,29 +115,3 @@
  * Page menu
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-{template page-menu}
-    <div class="wiki-page-menu">
-        <ul>
-            {foreach $item in $menu}
-                <li>
-                    <a href="{$item.href |escapeUri}" class="{$item.action}-link">
-                        {switch $item.action}
-                            {case 'edit'}
-                                 Править
-                            {case 'history'}
-                                 История
-                            {case 'pdf'}
-                                 PDF
-                            {case 'view'}
-                                 Смотреть
-                            {case 'current'}
-                                 Текущая версия
-                            {default}
-                                 {$item.action}
-                        {/switch}
-                    </a>
-                </li>
-            {/foreach}
-        </ul>
-    </div>
-{/template}

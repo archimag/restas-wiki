@@ -8,17 +8,20 @@
 
 (restas:define-module #:restas.wiki
   (:use #:cl #:iter #:restas.optional)
-  (:export #:*wiki-dir*
-           #:*wiki-user-function*
-           #:*finalize-page*
-           #:*generate-page-html*
+  (:export #:*wiki-user-function*
 
            ;; storage
            #:*storage*
-           #:storage-find-page
            #:file-storage
+           #:storage-find-page
+           #:storage-save-page
+           #:storage-page-history
 
-           ))
+           ;; drawer
+           #:drawer
+           #:finalize-page
+           #:render-route-data
+           #:generate-content-from-markup))
 
 (in-package #:restas.wiki)
 

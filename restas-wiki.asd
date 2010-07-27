@@ -17,8 +17,7 @@
                       ((:file "render-html")
                        (:file "render-pdf"))
                       :depends-on ("packages"))
-             (:file "preferences" :depends-on ("dokuwiki"))
              (:file "storage" :depends-on ("packages"))
              (:file "drawer" :depends-on ("dokuwiki"))
-             (:file "wiki" :depends-on ("preferences" "storage" "drawer"))))))
+             (:file "wiki" :depends-on ("storage" "drawer"))))))
     

@@ -8,7 +8,6 @@
 
 (in-package #:restas.wiki)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; storage generic interface
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -22,8 +21,8 @@
 (defgeneric storage-page-history (storage title)
   (:documentation "Return page history"))
 
-(defgeneric storage-page-revision (storage title revision)
-  (:documentation "Find wiki page revision in storage"))
+(defgeneric storage-page-version (storage title version)
+  (:documentation "Find wiki page version in storage"))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -32,8 +31,6 @@
 
 (defclass file-storage ()
   ((dir :initarg :dir :reader file-storage-dir)))
-
-;;;; aux
 
 (defun encode-page-title (title)
   (closure-template:encode-uri title))
@@ -50,10 +47,10 @@
   (merge-pathnames (format nil "archive/~A.~A.gz" (encode-page-title page) time)
                    (file-storage-dir storage)))
 
-;;;; implementation
-
 (defmethod storage-find-page ((storage file-storage) title)
-  (fad:file-exists-p (file-storage-page-pathname storage title)))
+  (let ((path (file-storage-page-pathname storage title)))
+    (if (fad:file-exists-p path)
+        (alexandria:read-file-into-string path))))
 
 (defmethod storage-save-page ((storage file-storage) title content author &optional comment)
   (let* ((time (get-universal-time))
@@ -91,5 +88,7 @@
                            :name (fourth item)
                            :author (second item)))))))
             
-(defmethod storage-page-revision ((storage file-storage) title revision)
-  (read-gzip-file-into-string (file-storage-archive-pathname storage title revision)))
+(defmethod storage-page-version ((storage file-storage) title version)
+  (let ((path (file-storage-archive-pathname storage title version)))
+    (if (fad:file-exists-p path)
+        (read-gzip-file-into-string path))))

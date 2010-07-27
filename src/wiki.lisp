@@ -13,13 +13,16 @@
 
 (define-route show-wiki-page (":(page)")
   (list :title page
-        :body (storage-find-page *storage* page)))  
+        :content (storage-find-page *storage* page)
+        :menu-links (list :edit-href (restas:genurl 'edit-wiki-page
+                                                    :page page)
+                          :history-href (restas:genurl 'history-wiki-page
+                                                       :page page))))
 
 (define-route edit-wiki-page ("edit/:(page)"                                     
                               :requirement #'wiki-user)
   (list :title (format nil "Edit \"~A\"" page)
-        :content (if (fad:file-exists-p (wiki-page-pathname page))
-                     (alexandria:read-file-into-string (wiki-page-pathname page)))))
+        :content (storage-find-page *storage* page)))
 
 (define-route edit-wiki-page/preview ("edit/:page"
                                       :method :post
@@ -49,26 +52,19 @@
         :history (iter (for item in (storage-page-history *storage* page))
                        (collect (list* :href (restas:genurl 'show-archive-wiki-page
                                                             :page page
-                                                            :revision (getf item :date))
-                                       item)))))
+                                                            :version (getf item :date))
+                                       item)))
+        :menu-links (list :view-href (restas:genurl 'show-wiki-page
+                                                    :page page))))
 
-(define-route show-archive-wiki-page ("history/:(page)/:(revision)")
-  (list :title ""
-        :body (storage-page-revision *storage* page revision)))
+(define-route show-archive-wiki-page ("history/:(page)/:(version)")
+  (list :title (format nil "Archive version of ~A: ~A" page version)
+        :content (storage-page-version *storage* page version)
+        :menu-links (list :current-version-href (restas:genurl 'show-wiki-page
+                                                       :page page)
+                          :history-href (restas:genurl 'history-wiki-page
+                                                  :page page))))
   
-  ;; (finalize-page nnnnn
-  ;;  (let* ((path (wiki-page-archive-pathname page time))
-  ;;         (dpage page)
-  ;;         (menu (if (wiki-user)
-  ;;                   `((:action "current" :href ,(restas:genurl 'show-wiki-page :page dpage))
-  ;;                     (:action "history" :href ,(restas:genurl 'history-wiki-page :page dpage))))))
-  ;;    (if (fad:file-exists-p path)
-  ;;        (restas.wiki.view:show-page (list :menu menu
-  ;;                                          :page (generate-page-html (wiki-parser:parse :dokuwiki
-  ;;                                                                                       (read-gzip-file-into-string path)))))
-  ;;        (restas.wiki.view:archive-not-found (list :menu menu))))
-  ;;  (format nil "Архивная версия - ~A" page)))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; misc
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -78,7 +74,7 @@
   (flexi-streams:with-output-to-sequence (out)
     (let ((out* (flexi-streams:make-flexi-stream out)))
       (pdf-render-wiki-page (wiki-parser:parse :dokuwiki
-                                               (wiki-page-pathname page))
+                                               (storage-find-page *storage* page))
                             out*))
     out))
 
