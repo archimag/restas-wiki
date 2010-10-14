@@ -7,7 +7,7 @@
 
 
 (restas:define-module #:restas.wiki
-  (:use #:cl #:iter #:restas.optional)
+  (:use #:cl #:iter)
   (:export #:*index-page-title*
            #:*wiki-user-function*
 

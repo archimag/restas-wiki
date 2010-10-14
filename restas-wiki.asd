@@ -7,7 +7,7 @@
 
 
 (defsystem restas-wiki
-  :depends-on (#:restas #:local-time #:zip #:closure-template)
+  :depends-on (#:restas #:local-time #:zip #:closure-template #:babel)
   :components
   ((:module "src"
             :components

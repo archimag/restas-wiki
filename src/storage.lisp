@@ -29,6 +29,25 @@
 ;;;; file storage 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defun write-string-into-gzip-file (string path)
+  (with-open-file (ostream
+                   path
+                   :element-type '(unsigned-byte 8)
+                   :direction :output
+                   :if-exists :supersede)
+    (salza2:with-compressor (compressor 'salza2:gzip-compressor
+                                        :callback (salza2:make-stream-output-callback ostream))
+      (salza2:compress-octet-vector (babel:string-to-octets string :encoding :utf-8)  
+                                    compressor))))
+
+(defun read-gzip-file-into-string (path)
+  (babel:octets-to-string (with-open-file (in path :element-type '(unsigned-byte 8))
+                            (zip:skip-gzip-header in)
+                            (flex:with-output-to-sequence (out)
+                              (zip:inflate in out)))
+                          :encoding :utf-8))
+
+
 (defclass file-storage ()
   ((dir :initarg :dir :reader file-storage-dir)))
 
