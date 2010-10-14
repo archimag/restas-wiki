@@ -1,4 +1,4 @@
-;;; wiki.lisp
+;;;; wiki.lisp
 ;;;;
 ;;;; This file is part of the restas-wiki library, released under Lisp-LGPL.
 ;;;; See file COPYING for details.
@@ -9,7 +9,8 @@
 (in-package #:restas.wiki)
 
 (define-route main-wiki-page ("")
-  (show-wiki-page :page "index"))
+  (list* :title *index-page-title*
+         (show-wiki-page :page "index")))
 
 (define-route show-wiki-page (":(page)")
   (list :title page

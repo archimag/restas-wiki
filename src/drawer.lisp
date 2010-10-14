@@ -37,8 +37,7 @@
   (restas.wiki.view:finalize-page data))
 
 (defmethod generate-content-from-markup ((drawer drawer) data)
-  ;;(render-wiki-page-to-string (wiki-parser:parse :dokuwiki (getf data :content))))
-  (getf data :content))
+  data)
 
 (defmethod render-route-data ((drawer drawer) data route)
   (funcall (find-symbol (symbol-name route)
@@ -46,14 +45,11 @@
            data))
 
 (defmethod render-route-data ((drawer drawer) data (route (eql 'main-wiki-page)))
-  (render-route-data drawer
-                     (list* :title *index-page-title*
-                     data)
-                     'show-wiki-page))
+  (render-route-data drawer data 'show-wiki-page))
 
 (defmethod render-route-data ((drawer drawer) data (route (eql 'show-wiki-page)))
   (if (getf data :content)
-      (generate-content-from-markup drawer data)
+      (generate-content-from-markup drawer (getf data :content))
       (restas.wiki.view:page-not-found (list :create-link
                                              (restas:genurl 'edit-wiki-page
                                                             :page (getf data :title))))))
@@ -62,7 +58,7 @@
 (defmethod render-route-data ((drawer drawer) data (route (eql 'edit-wiki-page/preview)))
   (render-route-data drawer
                      (if (getf data :content) 
-                         (list* :preview (generate-content-from-markup drawer data)
+                         (list* :preview (generate-content-from-markup drawer (getf data :content))
                                 data)
                          data)
                      'edit-wiki-page))
@@ -83,7 +79,7 @@
 
 (defmethod render-route-data ((drawer drawer) data (route (eql 'show-archive-wiki-page)))
   (if (getf data :content)
-      (generate-content-from-markup drawer data)
+      (generate-content-from-markup drawer (getf data :content))
       (restas.wiki.view:archive-not-found data)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
