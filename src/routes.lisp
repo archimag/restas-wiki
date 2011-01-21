@@ -8,11 +8,11 @@
 
 (in-package #:restas.wiki)
 
-(define-route main-wiki-page ("")
+(restas:define-route main-wiki-page ("")
   (list* :title *index-page-title*
          (show-wiki-page :page "index")))
 
-(define-route show-wiki-page (":(page)")
+(restas:define-route show-wiki-page (":(page)")
   (list :title page
         :content (storage-find-page *storage* page)
         :menu-links (list :edit-href (restas:genurl 'edit-wiki-page
@@ -20,26 +20,26 @@
                           :history-href (restas:genurl 'history-wiki-page
                                                        :page page))))
 
-(define-route edit-wiki-page ("edit/:(page)"                                     
-                              :requirement #'wiki-user)
+(restas:define-route edit-wiki-page ("edit/:(page)" 
+                                     :requirement #'wiki-user)
   (list :title (format nil "Edit \"~A\"" page)
         :content (storage-find-page *storage* page)))
 
-(define-route edit-wiki-page/preview ("edit/:page"
-                                      :method :post
-                                      :requirement (lambda () (hunchentoot:post-parameter "preview")))
+(restas:define-route edit-wiki-page/preview ("edit/:page"
+                                             :method :post
+                                             :requirement (lambda () (hunchentoot:post-parameter "preview")))
   (list :title page
         :content (hunchentoot:post-parameter "content")))
 
-(define-route edit-wiki-page/cancel ("edit/:page"
-                                     :method :post
-                                     :requirement (lambda () (hunchentoot:post-parameter "cancel")))
+(restas:define-route edit-wiki-page/cancel ("edit/:page"
+                                            :method :post
+                                            :requirement (lambda () (hunchentoot:post-parameter "cancel")))
   (restas:redirect 'show-wiki-page
                    :page page))
 
-(define-route edit-wiki-page/save ("edit/:page"
-                                   :method :post
-                                   :requirement (lambda () (hunchentoot:post-parameter "save")))
+(restas:define-route edit-wiki-page/save ("edit/:page"
+                                          :method :post
+                                          :requirement (lambda () (hunchentoot:post-parameter "save")))
   (storage-save-page *storage*
                      page
                      (hunchentoot:post-parameter "content")
@@ -47,8 +47,8 @@
   (restas:redirect 'show-wiki-page
                    :page page))
 
-(define-route history-wiki-page ("history/:(page)"
-                                 :requirement #'wiki-user)
+(restas:define-route history-wiki-page ("history/:(page)"
+                                        :requirement #'wiki-user)
   (list :title (format nil "History of page \"~A\"" page)
         :history (iter (for item in (storage-page-history *storage* page))
                        (collect (list* :href (restas:genurl 'show-archive-wiki-page
@@ -58,11 +58,11 @@
         :menu-links (list :view-href (restas:genurl 'show-wiki-page
                                                     :page page))))
 
-(define-route show-archive-wiki-page ("history/:(page)/:(version)")
+(restas:define-route show-archive-wiki-page ("history/:(page)/:(version)")
   (list :title (format nil "Archive version of ~A: ~A" page version)
         :content (storage-page-version *storage* page version)
         :menu-links (list :current-version-href (restas:genurl 'show-wiki-page
-                                                       :page page)
+                                                               :page page)
                           :history-href (restas:genurl 'history-wiki-page
-                                                  :page page))))
+                                                       :page page))))
   
