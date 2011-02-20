@@ -27,22 +27,22 @@
 
 (restas:define-route edit-wiki-page/preview ("edit/:page"
                                              :method :post
-                                             :requirement (lambda () (hunchentoot:post-parameter "preview")))
+                                             :requirement (lambda () (wsal:post-parameter "preview")))
   (list :title page
-        :content (hunchentoot:post-parameter "content")))
+        :content (wsal:post-parameter "content")))
 
 (restas:define-route edit-wiki-page/cancel ("edit/:page"
                                             :method :post
-                                            :requirement (lambda () (hunchentoot:post-parameter "cancel")))
+                                            :requirement (lambda () (wsal:post-parameter "cancel")))
   (restas:redirect 'show-wiki-page
                    :page page))
 
 (restas:define-route edit-wiki-page/save ("edit/:page"
                                           :method :post
-                                          :requirement (lambda () (hunchentoot:post-parameter "save")))
+                                          :requirement (lambda () (wsal:post-parameter "save")))
   (storage-save-page *storage*
                      page
-                     (hunchentoot:post-parameter "content")
+                     (wsal:post-parameter "content")
                      (wiki-user))
   (restas:redirect 'show-wiki-page
                    :page page))
